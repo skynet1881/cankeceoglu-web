@@ -5,7 +5,7 @@ export function parseProfile(html) {
   const encoded = tag?.[0].match(/data-module-args="([^"]*)"/)?.[1];
   if (!encoded) throw new Error('Instructor data missing');
   const data = JSON.parse(encoded.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
-  if (data.instructor_id !== 45773274 || !Number.isSafeInteger(data.num_students) || data.num_students < 0 || !Number.isSafeInteger(data.num_courses) || data.num_courses < 0) throw new Error('Invalid instructor statistics');
+  if (!Number.isSafeInteger(data.num_students) || data.num_students < 0 || !Number.isSafeInteger(data.num_courses) || data.num_courses < 0) throw new Error('Invalid instructor statistics');
   return {count:data.num_students, courses:data.num_courses};
 }
 export async function learners(request, fetcher = fetch, cache = globalThis.caches?.default) {
