@@ -6,7 +6,7 @@
     "directory": "./public",
     "binding": "ASSETS",
     "html_handling": "none",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/", "/api/*"]
   }
   // Add the D1 binding after creating the database (see README.md).
   // ,"d1_databases": [{"binding":"DB","database_name":"cankeceoglu-stats","database_id":"YOUR_DATABASE_ID"}]
