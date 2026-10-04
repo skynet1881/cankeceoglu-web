@@ -44,7 +44,7 @@ async function refreshLearners(){
   const data=await response.json();
   if(!Number.isSafeInteger(data.count)||data.count<0||data.count>=100000000||!Number.isSafeInteger(data.courses)||data.courses<0||!Number.isFinite(Date.parse(data.updatedAt)))throw new Error('Invalid statistics');
   learnerStats={count:data.count,courses:data.courses,updatedAt:data.updatedAt};
-  statsStatus='live';
+  statsStatus=data.upstreamAvailable===false?'unavailable':'live';
  }catch{statsStatus='unavailable'}
  render();
 }

@@ -41,3 +41,11 @@ ORDER BY day DESC, views DESC;
 ```
 
 The contact form still opens an email draft. Deploying this statistics backend does not enable direct email delivery.
+
+## Udemy refresh when Worker requests fail
+
+The learner API uses `public/udemy-stats.json` if direct Udemy access fails. It returns `upstreamAvailable: false` and a diagnostic `reason` (for example, `udemy_http_403` or `profile_parse_failed`) and retains the snapshot's actual verification timestamp. Cache errors no longer discard a successful fetch.
+
+The **Update Udemy statistics** GitHub Actions workflow checks the profile every six hours and commits a verified snapshot to `main`. After pushing the workflow, run it once from GitHub → Actions → Update Udemy statistics → Run workflow. Repository Actions must be enabled and the workflow must have permission to write contents; branch protection may prevent its push. Failed fetches leave the previous snapshot untouched. Udemy can also block GitHub runners; check the run log rather than assuming the data refreshed.
+
+If Cloudflare does not deploy commits made by the Actions bot, redeploy the latest commit manually. This workflow updates the repository, not the running Worker directly. For a manual snapshot update, run `node scripts/update-udemy-stats.mjs`, then commit, push, and deploy. Do not change the verification date without successfully fetching the source.

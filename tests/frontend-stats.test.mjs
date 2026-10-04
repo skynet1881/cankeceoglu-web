@@ -29,3 +29,8 @@ test('homepage is served from index.html and existing links remain unchanged',as
  assert.equal(await (await worker.fetch(new Request('https://example.com/'),env)).text(),'/index.html');
  assert.equal(await (await worker.fetch(new Request('https://example.com/about.html'),env)).text(),'/about.html');
 });
+test('scheduled snapshot updates counts without claiming a live Worker refresh',async()=>{
+ const elements=await renderStats({ok:true,json:async()=>({count:9000,courses:15,updatedAt:'2026-10-05T00:00:00Z',upstreamAvailable:false})});
+ assert.equal(elements['learner-count'].textContent,'9,000');assert.equal(elements['course-total'].textContent,'15');
+ assert.match(elements['learner-status'].textContent,/last verified/);
+});

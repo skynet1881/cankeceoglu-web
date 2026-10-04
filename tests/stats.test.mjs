@@ -31,3 +31,16 @@ test('visitor counter validates origin and path, stores aggregates, and reports 
  assert.equal(count,1);
  assert.equal((await visits(request('https://example.com','/'),{})).status,503);
 });
+test('cache failures do not discard a successful Udemy fetch',async()=>{
+ const cache={match:async()=>{throw Error('cache read')},put:async()=>{throw Error('cache write')}};
+ const response=await learners(new Request('https://example.com/api/learners'),async()=>new Response(html(profile)),cache);
+ assert.equal(response.status,200);assert.equal((await response.json()).count,8685);
+});
+test('blocked Worker fetch uses snapshot with original date and diagnostic reason',async()=>{
+ const snapshot={count:9000,courses:15,updatedAt:'2026-10-04T12:00:00Z',source:'https://www.udemy.com/user/skynet-engineering/'};
+ const assets={fetch:async()=>Response.json(snapshot)};
+ const response=await learners(new Request('https://example.com/api/learners'),async()=>new Response('blocked',{status:403}),null,assets);
+ const result=await response.json();
+ assert.equal(response.status,200);assert.equal(result.count,9000);assert.equal(result.updatedAt,snapshot.updatedAt);
+ assert.equal(result.upstreamAvailable,false);assert.equal(result.reason,'udemy_http_403');
+});
