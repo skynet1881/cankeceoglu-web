@@ -10,7 +10,7 @@ export async function visits(request, env) {
       const raw = await request.text();
       if (raw.length > 256) return json({error:'Request too large'},413);
       let data; try { data=JSON.parse(raw); } catch { return json({error:'Invalid JSON'},400); }
-      if (!['/','/index.html','/about.html'].includes(data?.path)) return json({error:'Invalid page'},400);
+      if (!['/','/index.html','/about.html','/blog.html'].includes(data?.path) && !/^\/blog\/[a-z0-9]+(?:-[a-z0-9]+)*\.html$/.test(data?.path || '')) return json({error:'Invalid page'},400);
       // Store daily aggregates only: no IP addresses, cookies, or visitor IDs.
       const day = new Date().toISOString().slice(0,10);
       const path = data.path === '/index.html' ? '/' : data.path;
