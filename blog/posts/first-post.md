@@ -1,5 +1,5 @@
 ---
-title: "İlk yazım"
+title: "Ilk yazım: Almanya'ya taşınma hikayem"
 date: "2026-10-10"
 description: "Neden Almanya'ya taşındım."
 category: "Almanya'da yaşam"
